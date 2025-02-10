@@ -1,57 +1,61 @@
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+import { auth } from "./confiq.js"; 
 
-import { signInWithEmailAndPassword ,  signInWithPopup, GoogleAuthProvider} from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
-import { auth } from "./confiq.js";
-const provider = new GoogleAuthProvider()
+let password = document.querySelector("#password");
+let email = document.querySelector("#email");
+let form = document.querySelector("#form");
 
-let password = document.querySelector("#password")
-let email = document.querySelector("#email")
-let form = document.querySelector("#form")
-let btn = document.querySelector("#btn")
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-form.addEventListener("submit" , (e)=>{
-    e.preventDefault()
-    console.log(password.value);
-    console.log(email.value);
-    
+    // Trim input values to remove any extra spaces
+    let emailValue = email.value.trim();
+    let passwordValue = password.value.trim();
 
-signInWithEmailAndPassword(auth, email.value, password.value)
-  .then((userCredential) => {
-   const user = userCredential.user;
-   window.location = "home.html"
-    console.log(user);
+    // Basic validation
+    if (!emailValue || !passwordValue) {
+        alert("Please fill in all fields.");
+        return;
+    }
 
-    
-  })
-  .catch((error) => {
-    const errorMessage = error.message;
-    console.log(errorMessage);
-    
-  });
+    // Sign in with Firebase
+    signInWithEmailAndPassword(auth, emailValue, passwordValue)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            console.log("User signed in:", user);
+            window.location.href = "home.html"; // Redirect to home page
+        })
+        .catch((error) => {
+            const errorMessage = error.message;
+            console.error("Error signing in:", errorMessage);
+            alert("Error signing in: " + errorMessage); // Show error message to the user
+        });
+
+    // Clear input fields
     email.value = "";
-    password.value = ""
-    
-})
-
-btn.addEventListener("click" , ()=>{
+    password.value = "";
+});
+// btn.addEventListener("click" , ()=>{
   
-    signInWithPopup(auth, provider)
-    .then((result) => {
+//     signInWithPopup(auth, provider)
+//     .then((result) => {
       
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential.accessToken;
+//       const credential = GoogleAuthProvider.credentialFromResult(result);
+//      console.log(credential);
+     
 
-      const user = result.user;
-      console.log(user);
+//       const user = result.user;
+//       console.log(user);
       
     
-    }).catch((error) => {
+//     }).catch((error) => {
      
  
-      const errorMessage = error.message;
-      console.log(errorMessage);
+//       const errorMessage = error.message;
+//       console.log(errorMessage);
       
    
-    });
+//     });
 
 
-})
+// })
